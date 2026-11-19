@@ -1,0 +1,2 @@
+FROM balenalib/%%BALENA_ARCH%%-alpine
+CMD ["sh","-c","echo hello from api on %%BALENA_ARCH%%; sleep infinity"]

@@ -1,0 +1,36 @@
+version: '2.4'
+services:
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    depends_on:
+      - api
+    restart: always
+    privileged: true
+    network_mode: host
+    labels:
+      io.balena.features.supervisor-api: '1'
+      io.balena.features.dbus: '1'
+    environment:
+      API_URL: http://localhost:3000
+    volumes:
+      - app-data:/data
+  api:
+    build: ./api
+    ports:
+      - '3000:3000'
+    depends_on:
+      - cache
+    restart: unless-stopped
+    environment:
+      - LOG_LEVEL=info
+      - FEATURE_X=true
+    command: ['sh', '-c', 'echo api up; sleep infinity']
+    volumes:
+      - app-data:/data
+  cache:
+    image: redis:7-alpine
+    restart: always
+volumes:
+  app-data: {}
